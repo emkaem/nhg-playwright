@@ -15,8 +15,19 @@ export class SneltoetsAcceptatie {
     // lijfrente staat op 0
     readonly inputVerminderdInkomen: Locator;
     readonly inputVanafMaand: Locator;
+
     readonly radiobuttonSprakeVanMedeaanvrager: Locator;
+    readonly dateMedeaanvragerGeboortedatum: Locator;
+    readonly inputMedeaanvragerBrutoJaarinkomen: Locator;
+    readonly inputMedeaanvragerVerminderdInkomen: Locator;
+    readonly inputMedeaanvragerVanafMaand: Locator;
+
     readonly radiobuttonFinancieleVerplichtingen: Locator;
+    readonly inputFinancieleVerplichtingenBedragMaandelijks: Locator;
+    readonly inputFinancieleVerplichtingenAantalMaanden: Locator;
+    readonly inputFinancieleVerplichtingenHoogteMaandelijkseAlimentatieplicht: Locator;
+    readonly inputFinancieleVerplichtingenAantalMaandenAlimentatieplicht: Locator;
+
     readonly buttonBereken: Locator;
     readonly headerResultaat: Locator;
     readonly valueDatumToetsing: Locator;
@@ -34,10 +45,19 @@ export class SneltoetsAcceptatie {
         this.inputBrutoJaarinkomen = page.getByRole('textbox', { name: 'Bruto jaarinkomen' })
         this.inputVerminderdInkomen = page.getByRole('textbox', { name: 'Verminderd inkomen' })
         this.inputVanafMaand = page.getByRole('textbox', { name: 'Vanaf maand' })
+
         this.radiobuttonSprakeVanMedeaanvrager = page.getByRole('radiogroup', { name: 'Sprake van medeaanvrager' })
-        // add extra fields when YES is selected
+        this.dateMedeaanvragerGeboortedatum = page.getByTestId('391.InkomensToets.NhgInkToetsContent_201801.dataView3').getByRole('textbox', { name: 'Geboortedatum' });
+        this.inputMedeaanvragerBrutoJaarinkomen = page.getByTestId('391.InkomensToets.NhgInkToetsContent_201801.dataView3').getByRole('textbox', { name: 'Bruto jaarinkomen' });
+        this.inputMedeaanvragerVerminderdInkomen = page.getByTestId('391.InkomensToets.NhgInkToetsContent_201801.dataView3').getByRole('textbox', { name: 'Verminderd inkomen' });
+        this.inputMedeaanvragerVanafMaand = page.getByTestId('391.InkomensToets.NhgInkToetsContent_201801.dataView3').getByRole('textbox', { name: 'Vanaf maand' });
+
         this.radiobuttonFinancieleVerplichtingen = page.getByRole('radiogroup', { name: 'Financiële verplichtingen?' })
-        // add extra fields when YES is selected
+        this.inputFinancieleVerplichtingenBedragMaandelijks = page.getByTestId('391.InkomensToets.NhgInkToetsContent_201801.container19').getByRole('textbox', { name: 'Bedrag maandelijks' });
+        this.inputFinancieleVerplichtingenAantalMaanden = page.getByTestId('391.InkomensToets.NhgInkToetsContent_201801.container19').getByRole('textbox', { name: 'Aantal maanden' }).first();
+        this.inputFinancieleVerplichtingenHoogteMaandelijkseAlimentatieplicht = page.getByTestId('391.InkomensToets.NhgInkToetsContent_201801.container19').getByRole('textbox', { name: 'Hoogte maandelijkse' });
+        this.inputFinancieleVerplichtingenAantalMaandenAlimentatieplicht = page.getByTestId('391.InkomensToets.NhgInkToetsContent_201801.container19').getByRole('textbox', { name: 'Aantal maanden' }).nth(1);
+
         this.buttonBereken = page.getByRole('button', { name: 'Bereken' }).first(); // todo: fix the .first() workaround
         // Initialize the locator for the Resultaat header
         this.headerResultaat = page.locator('h4.mx-text.mx-name-text6');

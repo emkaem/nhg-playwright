@@ -6,7 +6,7 @@ test.beforeEach(async ({ page }) => {
   await sneltoetsAcceptatie.visitPage();
 });
 
-test('happy flow filling in NHG Sneltoets', async ({ page }) => {
+test('happy flow filling in NHG Sneltoets with minimal input', async ({ page }) => {
     // wait for the page to load completely
     await page.waitForLoadState('networkidle');
     const sneltoetsAcceptatie = new SneltoetsAcceptatie(page);
@@ -36,6 +36,48 @@ test('happy flow filling in NHG Sneltoets', async ({ page }) => {
 
     await expect(sneltoetsAcceptatie.valueDatumToetsing).toHaveText('20-01-2026');
     await expect(sneltoetsAcceptatie.valueIndicatieLening).toHaveText('5.110');
+});
+
+test('happy flow filling in NHG Sneltoets with maximum input', async ({ page }) => {
+    // wait for the page to load completely
+    await page.waitForLoadState('networkidle');
+    const sneltoetsAcceptatie = new SneltoetsAcceptatie(page);
+    await sneltoetsAcceptatie.inputGewenstLeenbedrag.fill('470000');
+    await sneltoetsAcceptatie.inputWaarvanInBox3.fill('25000');
+    await sneltoetsAcceptatie.inputHypotheekrente.fill('23,5');
+    await sneltoetsAcceptatie.inputGewensteLooptijd.fill('96');
+    await sneltoetsAcceptatie.inputJaarlijksErfpactcanon.fill('100');
+    await sneltoetsAcceptatie.dropdownEnergielabel.selectOption('A++');
+    await sneltoetsAcceptatie.dateGeboortedatum.fill('13-06-1975');
+    await sneltoetsAcceptatie.inputBrutoJaarinkomen.fill('123000');
+    await sneltoetsAcceptatie.inputVerminderdInkomen.fill('1000');
+    await sneltoetsAcceptatie.inputVanafMaand.fill('6');
+    
+    await sneltoetsAcceptatie.radiobuttonSprakeVanMedeaanvrager.getByLabel('Ja').check();
+    await sneltoetsAcceptatie.dateMedeaanvragerGeboortedatum.fill('20-12-1980');
+    await sneltoetsAcceptatie.inputMedeaanvragerBrutoJaarinkomen.fill('80000');
+    await sneltoetsAcceptatie.inputMedeaanvragerVerminderdInkomen.fill('500');
+    await sneltoetsAcceptatie.inputMedeaanvragerVanafMaand.fill('7');
+
+    await sneltoetsAcceptatie.radiobuttonFinancieleVerplichtingen.getByLabel('Ja').check();
+    await sneltoetsAcceptatie.inputFinancieleVerplichtingenBedragMaandelijks.fill('750');
+    await sneltoetsAcceptatie.inputFinancieleVerplichtingenAantalMaanden.fill('12');
+    await sneltoetsAcceptatie.inputFinancieleVerplichtingenHoogteMaandelijkseAlimentatieplicht.fill('345');
+    await sneltoetsAcceptatie.inputFinancieleVerplichtingenAantalMaandenAlimentatieplicht.fill('24');
+
+    const responsePromise = page.waitForResponse(
+        response => response.url().includes('/xas/')
+    );    
+    await sneltoetsAcceptatie.buttonBereken.click();
+
+    const response =  await responsePromise;
+    expect(response.status()).toBe(200);
+
+
+    await expect(sneltoetsAcceptatie.headerResultaat).toBeVisible();
+
+    await expect(sneltoetsAcceptatie.valueDatumToetsing).toHaveText('20-01-2026');
+    await expect(sneltoetsAcceptatie.valueIndicatieLening).toHaveText('46.738');
 });
 
 /* test: Happy flow > restschuld "nee"
