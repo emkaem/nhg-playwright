@@ -16,6 +16,7 @@ test('happy flow filling in NHG Sneltoets with minimal input', async ({ page }) 
   await expect(sneltoetsAcceptatie.headerResultaat).toBeVisible();
   await expect(sneltoetsAcceptatie.valueDatumToetsing).toHaveText('20-01-2026');
   await expect(sneltoetsAcceptatie.valueIndicatieLening).toHaveText('5.110');
+  await expect(page).toHaveScreenshot('sneltoets-minimal-input-desktop.png');
 });
 
 test('happy flow filling in NHG Sneltoets with maximum input', async ({ page }) => {
@@ -27,6 +28,7 @@ test('happy flow filling in NHG Sneltoets with maximum input', async ({ page }) 
   await expect(sneltoetsAcceptatie.headerResultaat).toBeVisible();
   await expect(sneltoetsAcceptatie.valueDatumToetsing).toHaveText('20-01-2026');
   await expect(sneltoetsAcceptatie.valueIndicatieLening).toHaveText('46.738');
+  await expect(page).toHaveScreenshot('sneltoets-maximum-input-desktop.png');
 });
 
 test('Sneltoets with restschuld "nee" and empty all fields', async ({ page }) => {
@@ -36,7 +38,6 @@ test('Sneltoets with restschuld "nee" and empty all fields', async ({ page }) =>
     sprakeVanMedeaanvrager: 'Ja',
     financieleVerplichtingen: 'Ja',
   });
-
   await sneltoetsAcceptatie.clickSneltoetsBerekenButton();
 
   // assert "Resultaat" header is not visible nor the other fields
@@ -49,6 +50,7 @@ test('Sneltoets with restschuld "nee" and empty all fields', async ({ page }) =>
   await expect(sneltoetsAcceptatie.inputJaarlijksErfpactcanonError).toBeVisible();
   await expect(sneltoetsAcceptatie.inputBrutoJaarinkomenError).toBeVisible();
   await expect(sneltoetsAcceptatie.inputMedeaanvragerBrutoJaarinkomenError).toBeVisible();
+  await expect(page).toHaveScreenshot('sneltoets-empty-fields-input-desktop.png');
 });
 
 /* test: Happy flow > restschuld "ja"

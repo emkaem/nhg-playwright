@@ -11,9 +11,12 @@ test.beforeEach(async ({ page }) => {
 });
 
 test('the flow to get to NHG-toets page from the homepage (desktop)', async ({ page }) => {
+  await expect(page).toHaveScreenshot('homepage-desktop.png');
+
   const nhgToetsButton = await page.locator('a.text-white', { hasText: 'NHG toets' }).first();
   await nhgToetsButton.scrollIntoViewIfNeeded();
   await expect(nhgToetsButton).toBeVisible();
+  await expect(page).toHaveScreenshot('homepage-footer-desktop.png');
   await nhgToetsButton.click();
 
   await expect(page).toHaveTitle('NHG - Sneltoets Acceptatie');
