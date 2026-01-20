@@ -8,50 +8,48 @@ test.beforeEach(async ({ page }) => {
 });
 
 test('happy flow filling in NHG Sneltoets with minimal input', async ({ page }) => {
-    const sneltoetsAcceptatie = new SneltoetsAcceptatie(page);
+  const sneltoetsAcceptatie = new SneltoetsAcceptatie(page);
 
-    await sneltoetsAcceptatie.fillSneltoetsForm(sneltoetsMinimalInput);
-    await sneltoetsAcceptatie.clickSneltoetsBerekenButton();
+  await sneltoetsAcceptatie.fillSneltoetsForm(sneltoetsMinimalInput);
+  await sneltoetsAcceptatie.clickSneltoetsBerekenButton();
 
-    await expect(sneltoetsAcceptatie.headerResultaat).toBeVisible();
-    await expect(sneltoetsAcceptatie.valueDatumToetsing).toHaveText('20-01-2026');
-    await expect(sneltoetsAcceptatie.valueIndicatieLening).toHaveText('5.110');
+  await expect(sneltoetsAcceptatie.headerResultaat).toBeVisible();
+  await expect(sneltoetsAcceptatie.valueDatumToetsing).toHaveText('20-01-2026');
+  await expect(sneltoetsAcceptatie.valueIndicatieLening).toHaveText('5.110');
 });
 
 test('happy flow filling in NHG Sneltoets with maximum input', async ({ page }) => {
-    const sneltoetsAcceptatie = new SneltoetsAcceptatie(page);
+  const sneltoetsAcceptatie = new SneltoetsAcceptatie(page);
 
-    await sneltoetsAcceptatie.fillSneltoetsForm(sneltoetsMaximumInput);
-    await sneltoetsAcceptatie.clickSneltoetsBerekenButton();
+  await sneltoetsAcceptatie.fillSneltoetsForm(sneltoetsMaximumInput);
+  await sneltoetsAcceptatie.clickSneltoetsBerekenButton();
 
-    await expect(sneltoetsAcceptatie.headerResultaat).toBeVisible();
-    await expect(sneltoetsAcceptatie.valueDatumToetsing).toHaveText('20-01-2026');
-    await expect(sneltoetsAcceptatie.valueIndicatieLening).toHaveText('46.738');
+  await expect(sneltoetsAcceptatie.headerResultaat).toBeVisible();
+  await expect(sneltoetsAcceptatie.valueDatumToetsing).toHaveText('20-01-2026');
+  await expect(sneltoetsAcceptatie.valueIndicatieLening).toHaveText('46.738');
 });
 
 test('Sneltoets with restschuld "nee" and empty all fields', async ({ page }) => {
-    const sneltoetsAcceptatie = new SneltoetsAcceptatie(page);
+  const sneltoetsAcceptatie = new SneltoetsAcceptatie(page);
 
-    await sneltoetsAcceptatie.clearSneltoetsForm({
-        sprakeVanMedeaanvrager: 'Ja',
-        financieleVerplichtingen: 'Ja',
-    });
+  await sneltoetsAcceptatie.clearSneltoetsForm({
+    sprakeVanMedeaanvrager: 'Ja',
+    financieleVerplichtingen: 'Ja',
+  });
 
-    await sneltoetsAcceptatie.clickSneltoetsBerekenButton();
+  await sneltoetsAcceptatie.clickSneltoetsBerekenButton();
 
-    // assert "Resultaat" header is not visible nor the other fields
-    await expect(sneltoetsAcceptatie.headerResultaat).not.toBeAttached();
-    await expect(sneltoetsAcceptatie.valueDatumToetsing).not.toBeAttached();
-    await expect(sneltoetsAcceptatie.valueIndicatieLening).not.toBeAttached();
-    
-    // assert error messages are displayed
-    await expect(sneltoetsAcceptatie.inputGewenstLeenbedragError).toBeVisible();
-    await expect(sneltoetsAcceptatie.inputJaarlijksErfpactcanonError).toBeVisible();
-    await expect(sneltoetsAcceptatie.inputBrutoJaarinkomenError).toBeVisible();
-    await expect(sneltoetsAcceptatie.inputMedeaanvragerBrutoJaarinkomenError).toBeVisible();
+  // assert "Resultaat" header is not visible nor the other fields
+  await expect(sneltoetsAcceptatie.headerResultaat).not.toBeAttached();
+  await expect(sneltoetsAcceptatie.valueDatumToetsing).not.toBeAttached();
+  await expect(sneltoetsAcceptatie.valueIndicatieLening).not.toBeAttached();
+
+  // assert error messages are displayed
+  await expect(sneltoetsAcceptatie.inputGewenstLeenbedragError).toBeVisible();
+  await expect(sneltoetsAcceptatie.inputJaarlijksErfpactcanonError).toBeVisible();
+  await expect(sneltoetsAcceptatie.inputBrutoJaarinkomenError).toBeVisible();
+  await expect(sneltoetsAcceptatie.inputMedeaanvragerBrutoJaarinkomenError).toBeVisible();
 });
-
-
 
 /* test: Happy flow > restschuld "ja"
     - fill in the whole form
@@ -90,4 +88,3 @@ test('Sneltoets with restschuld "nee" and empty all fields', async ({ page }) =>
     - NAN
     - decimals
 */
-
