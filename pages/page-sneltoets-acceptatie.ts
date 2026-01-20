@@ -1,7 +1,7 @@
 import { type Locator, type Page, Response, expect } from '@playwright/test';
 
 // Define an interface for the form fields
-interface SneltoetsFormFields {
+export interface SneltoetsFormFields {
     gewenstLeenbedrag?: string;
     waarvanInBox3?: string;
     hypotheekrente?: string;

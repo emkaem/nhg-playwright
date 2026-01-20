@@ -1,5 +1,6 @@
 import { test, expect } from '@playwright/test';
 import { SneltoetsAcceptatie } from '../pages/page-sneltoets-acceptatie';
+import { sneltoetsMinimalInput, sneltoetsMaximumInput } from '../fixtures/data-sneltoets-acceptatie';
 
 test.beforeEach(async ({ page }) => {
   const sneltoetsAcceptatie = new SneltoetsAcceptatie(page);
@@ -9,21 +10,7 @@ test.beforeEach(async ({ page }) => {
 test('happy flow filling in NHG Sneltoets with minimal input', async ({ page }) => {
     const sneltoetsAcceptatie = new SneltoetsAcceptatie(page);
 
-    await sneltoetsAcceptatie.fillSneltoetsForm({
-        gewenstLeenbedrag: '250000',
-        waarvanInBox3: '5000',
-        hypotheekrente: '3,5',
-        gewensteLooptijd: '30',
-        jaarlijksErfpactcanon: '1200',
-        energielabel: 'B',
-        geboortedatum: '13-01-1985',
-        brutoJaarinkomen: '60000',
-        verminderdInkomen: '0',
-        vanafMaand: '1',
-        sprakeVanMedeaanvrager: 'Nee',
-        financieleVerplichtingen: 'Nee',
-    });
-
+    await sneltoetsAcceptatie.fillSneltoetsForm(sneltoetsMinimalInput);
     await sneltoetsAcceptatie.clickSneltoetsBerekenButton();
 
     await expect(sneltoetsAcceptatie.headerResultaat).toBeVisible();
@@ -33,30 +20,8 @@ test('happy flow filling in NHG Sneltoets with minimal input', async ({ page }) 
 
 test('happy flow filling in NHG Sneltoets with maximum input', async ({ page }) => {
     const sneltoetsAcceptatie = new SneltoetsAcceptatie(page);
-    
-    await sneltoetsAcceptatie.fillSneltoetsForm({
-        gewenstLeenbedrag: '470000',
-        waarvanInBox3: '25000',
-        hypotheekrente: '23,5',
-        gewensteLooptijd: '96',
-        jaarlijksErfpactcanon: '100',
-        energielabel: 'A++',
-        geboortedatum: '13-06-1975',
-        brutoJaarinkomen: '123000',
-        verminderdInkomen: '1000',
-        vanafMaand: '6',
-        sprakeVanMedeaanvrager: 'Ja',
-        medeaanvragerGeboortedatum: '20-12-1980',
-        medeaanvragerBrutoJaarinkomen: '80000',
-        medeaanvragerVerminderdInkomen: '500',
-        medeaanvragerVanafMaand: '7',
-        financieleVerplichtingen: 'Ja',
-        financieleVerplichtingenBedragMaandelijks: '750',
-        financieleVerplichtingenAantalMaanden: '12',
-        financieleVerplichtingenHoogteMaandelijkseAlimentatieplicht: '345',
-        financieleVerplichtingenAantalMaandenAlimentatieplicht: '24'
-    });
 
+    await sneltoetsAcceptatie.fillSneltoetsForm(sneltoetsMaximumInput);
     await sneltoetsAcceptatie.clickSneltoetsBerekenButton();
 
     await expect(sneltoetsAcceptatie.headerResultaat).toBeVisible();
