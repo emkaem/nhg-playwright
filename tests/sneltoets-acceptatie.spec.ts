@@ -9,7 +9,6 @@ test.beforeEach(async ({ page }) => {
 test('happy flow filling in NHG Sneltoets with minimal input', async ({ page }) => {
     const sneltoetsAcceptatie = new SneltoetsAcceptatie(page);
 
-    // Use the generic function to fill the form with specific values
     await sneltoetsAcceptatie.fillSneltoetsForm({
         gewenstLeenbedrag: '250000',
         waarvanInBox3: '5000',
@@ -33,9 +32,7 @@ test('happy flow filling in NHG Sneltoets with minimal input', async ({ page }) 
     const response =  await responsePromise;
     expect(response.status()).toBe(200);
 
-
     await expect(sneltoetsAcceptatie.headerResultaat).toBeVisible();
-
     await expect(sneltoetsAcceptatie.valueDatumToetsing).toHaveText('20-01-2026');
     await expect(sneltoetsAcceptatie.valueIndicatieLening).toHaveText('5.110');
 });
@@ -43,7 +40,6 @@ test('happy flow filling in NHG Sneltoets with minimal input', async ({ page }) 
 test('happy flow filling in NHG Sneltoets with maximum input', async ({ page }) => {
     const sneltoetsAcceptatie = new SneltoetsAcceptatie(page);
     
-    // Use the generic function to fill the form with specific values
     await sneltoetsAcceptatie.fillSneltoetsForm({
         gewenstLeenbedrag: '470000',
         waarvanInBox3: '25000',
@@ -77,22 +73,40 @@ test('happy flow filling in NHG Sneltoets with maximum input', async ({ page }) 
 
 
     await expect(sneltoetsAcceptatie.headerResultaat).toBeVisible();
-
     await expect(sneltoetsAcceptatie.valueDatumToetsing).toHaveText('20-01-2026');
     await expect(sneltoetsAcceptatie.valueIndicatieLening).toHaveText('46.738');
 });
 
-/* test: Happy flow > restschuld "nee"
-    - fill in the whole form
-    - click on "Bereken
-    - assert the result is displayed
-    - assert form that is send with API 
-    - if possible, modifiy a couple of field
-    - assert another calculation is done"
+test('Sneltoets with restschuld "nee" and empty all fields', async ({ page }) => {
+    const sneltoetsAcceptatie = new SneltoetsAcceptatie(page);
 
-    modifiers: 
-        > first go to restschuld "ja" fill in the extra field and verify none of those are send with the api 
-*/
+    await sneltoetsAcceptatie.clearSneltoetsForm({
+        sprakeVanMedeaanvrager: 'Ja',
+        financieleVerplichtingen: 'Ja',
+    });
+
+    const responsePromise = page.waitForResponse(
+        response => response.url().includes('/xas/')
+    );    
+    await sneltoetsAcceptatie.buttonBereken.click();
+
+    const response =  await responsePromise;
+    expect(response.status()).toBe(200);
+    /// todo: this currently gives a POST 200, what is the expected behavior is?
+
+    // assert "Resultaat" header is not visible nor the other fields
+    await expect(sneltoetsAcceptatie.headerResultaat).not.toBeAttached();
+    await expect(sneltoetsAcceptatie.valueDatumToetsing).not.toBeAttached();
+    await expect(sneltoetsAcceptatie.valueIndicatieLening).not.toBeAttached();
+    
+    // assert error messages are displayed
+    await expect(sneltoetsAcceptatie.inputGewenstLeenbedragError).toBeVisible();
+    await expect(sneltoetsAcceptatie.inputJaarlijksErfpactcanonError).toBeVisible();
+    await expect(sneltoetsAcceptatie.inputBrutoJaarinkomenError).toBeVisible();
+    await expect(sneltoetsAcceptatie.inputMedeaanvragerBrutoJaarinkomenError).toBeVisible();
+});
+
+
 
 /* test: Happy flow > restschuld "ja"
     - fill in the whole form

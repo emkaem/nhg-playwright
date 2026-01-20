@@ -27,13 +27,16 @@ interface SneltoetsFormFields {
 export class SneltoetsAcceptatie {
     readonly page: Page;
     readonly inputGewenstLeenbedrag: Locator;
+    readonly inputGewenstLeenbedragError: Locator;
     readonly inputWaarvanInBox3: Locator;
     readonly inputHypotheekrente: Locator;
     readonly inputGewensteLooptijd: Locator;
     readonly inputJaarlijksErfpactcanon: Locator;
+    readonly inputJaarlijksErfpactcanonError: Locator;
     readonly dropdownEnergielabel: Locator;
     readonly dateGeboortedatum: Locator;
     readonly inputBrutoJaarinkomen: Locator;
+    readonly inputBrutoJaarinkomenError: Locator;
     // aow datum Leeg
     // pension en/of aow staat op 0
     // lijfrente staat op 0
@@ -43,6 +46,7 @@ export class SneltoetsAcceptatie {
     readonly radiobuttonSprakeVanMedeaanvrager: Locator;
     readonly dateMedeaanvragerGeboortedatum: Locator;
     readonly inputMedeaanvragerBrutoJaarinkomen: Locator;
+    readonly inputMedeaanvragerBrutoJaarinkomenError: Locator;
     readonly inputMedeaanvragerVerminderdInkomen: Locator;
     readonly inputMedeaanvragerVanafMaand: Locator;
 
@@ -60,19 +64,23 @@ export class SneltoetsAcceptatie {
     constructor(page: Page) {
         this.page = page;
         this.inputGewenstLeenbedrag = page.getByRole('textbox', { name: 'Gewenst leenbedrag' })
+        this.inputGewenstLeenbedragError = page.getByText('Vul een bedrag in tussen de 0 en 470.000');
         this.inputWaarvanInBox3 = page.getByRole('textbox', { name: 'Waarvan in box 3' })
         this.inputHypotheekrente = page.locator('label:has-text("Hypotheekrente") ~ div input');
         this.inputGewensteLooptijd = page.locator('label:has-text("Gewenste looptijd") ~ div input');
         this.inputJaarlijksErfpactcanon = page.getByRole('textbox', { name: 'Jaarlijks erfpachtcanon' })
+        this.inputJaarlijksErfpactcanonError = page.getByText('Vul een waarde in tussen de 0 en 10000000');
         this.dropdownEnergielabel = page.getByLabel('Energielabel');
         this.dateGeboortedatum = page.getByRole('textbox', { name: 'Geboortedatum' })
-        this.inputBrutoJaarinkomen = page.getByRole('textbox', { name: 'Bruto jaarinkomen' })
+        this.inputBrutoJaarinkomen = page.getByRole('textbox', { name: 'Bruto jaarinkomen' });
+        this.inputBrutoJaarinkomenError = page.getByTestId('391.InkomensToets.NhgInkToetsContent_201801.dataView2').getByText('Ongeldige waarde')
         this.inputVerminderdInkomen = page.getByRole('textbox', { name: 'Verminderd inkomen' })
         this.inputVanafMaand = page.getByRole('textbox', { name: 'Vanaf maand' })
 
         this.radiobuttonSprakeVanMedeaanvrager = page.getByRole('radiogroup', { name: 'Sprake van medeaanvrager' })
         this.dateMedeaanvragerGeboortedatum = page.getByTestId('391.InkomensToets.NhgInkToetsContent_201801.dataView3').getByRole('textbox', { name: 'Geboortedatum' });
         this.inputMedeaanvragerBrutoJaarinkomen = page.getByTestId('391.InkomensToets.NhgInkToetsContent_201801.dataView3').getByRole('textbox', { name: 'Bruto jaarinkomen' });
+        this.inputMedeaanvragerBrutoJaarinkomenError = page.getByTestId('391.InkomensToets.NhgInkToetsContent_201801.dataView3').getByText('Ongeldige waarde')
         this.inputMedeaanvragerVerminderdInkomen = page.getByTestId('391.InkomensToets.NhgInkToetsContent_201801.dataView3').getByRole('textbox', { name: 'Verminderd inkomen' });
         this.inputMedeaanvragerVanafMaand = page.getByTestId('391.InkomensToets.NhgInkToetsContent_201801.dataView3').getByRole('textbox', { name: 'Vanaf maand' });
 
@@ -128,6 +136,40 @@ export class SneltoetsAcceptatie {
             await this.inputFinancieleVerplichtingenAantalMaanden.fill(fields.financieleVerplichtingenAantalMaanden || '');
             await this.inputFinancieleVerplichtingenHoogteMaandelijkseAlimentatieplicht.fill(fields.financieleVerplichtingenHoogteMaandelijkseAlimentatieplicht || '');
             await this.inputFinancieleVerplichtingenAantalMaandenAlimentatieplicht.fill(fields.financieleVerplichtingenAantalMaandenAlimentatieplicht || '');
+        } else if (fields.financieleVerplichtingen === 'Nee') {
+            await this.radiobuttonFinancieleVerplichtingen.getByLabel('Nee').check();
+        }
+    }
+
+    // Function to clear all form fields
+    async clearSneltoetsForm(fields: SneltoetsFormFields) {
+        await this.inputGewenstLeenbedrag.clear();
+        await this.inputWaarvanInBox3.clear();
+        await this.inputHypotheekrente.clear();
+        await this.inputGewensteLooptijd.clear();
+        await this.inputJaarlijksErfpactcanon.clear();
+        await this.dropdownEnergielabel.selectOption('');
+        await this.dateGeboortedatum.clear();
+        await this.inputBrutoJaarinkomen.clear();
+        await this.inputVerminderdInkomen.clear();
+        await this.inputVanafMaand.clear();
+
+        if (fields.sprakeVanMedeaanvrager === 'Ja') {
+            await this.radiobuttonSprakeVanMedeaanvrager.getByLabel('Ja').check();
+            await this.dateMedeaanvragerGeboortedatum.clear();
+            await this.inputMedeaanvragerBrutoJaarinkomen.clear();
+            await this.inputMedeaanvragerVerminderdInkomen.clear();
+            await this.inputMedeaanvragerVanafMaand.clear();
+        } else if (fields.sprakeVanMedeaanvrager === 'Nee') {
+            await this.radiobuttonSprakeVanMedeaanvrager.getByLabel('Nee').check();
+        }
+
+        if (fields.financieleVerplichtingen === 'Ja') {
+            await this.radiobuttonFinancieleVerplichtingen.getByLabel('Ja').check();
+            await this.inputFinancieleVerplichtingenBedragMaandelijks.clear();
+            await this.inputFinancieleVerplichtingenAantalMaanden.clear();
+            await this.inputFinancieleVerplichtingenHoogteMaandelijkseAlimentatieplicht.clear();
+            await this.inputFinancieleVerplichtingenAantalMaandenAlimentatieplicht.clear();
         } else if (fields.financieleVerplichtingen === 'Nee') {
             await this.radiobuttonFinancieleVerplichtingen.getByLabel('Nee').check();
         }
