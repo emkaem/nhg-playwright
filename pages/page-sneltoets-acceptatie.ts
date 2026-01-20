@@ -1,5 +1,29 @@
 import { type Locator, type Page } from '@playwright/test';
 
+// Define an interface for the form fields
+interface SneltoetsFormFields {
+    gewenstLeenbedrag?: string;
+    waarvanInBox3?: string;
+    hypotheekrente?: string;
+    gewensteLooptijd?: string;
+    jaarlijksErfpactcanon?: string;
+    energielabel?: string;
+    geboortedatum?: string;
+    brutoJaarinkomen?: string;
+    verminderdInkomen?: string;
+    vanafMaand?: string;
+    sprakeVanMedeaanvrager?: 'Ja' | 'Nee';
+    medeaanvragerGeboortedatum?: string;
+    medeaanvragerBrutoJaarinkomen?: string;
+    medeaanvragerVerminderdInkomen?: string;
+    medeaanvragerVanafMaand?: string;
+    financieleVerplichtingen?: 'Ja' | 'Nee';
+    financieleVerplichtingenBedragMaandelijks?: string;
+    financieleVerplichtingenAantalMaanden?: string;
+    financieleVerplichtingenHoogteMaandelijkseAlimentatieplicht?: string;
+    financieleVerplichtingenAantalMaandenAlimentatieplicht?: string;
+}
+
 export class SneltoetsAcceptatie {
     readonly page: Page;
     readonly inputGewenstLeenbedrag: Locator;
@@ -59,7 +83,7 @@ export class SneltoetsAcceptatie {
         this.inputFinancieleVerplichtingenAantalMaandenAlimentatieplicht = page.getByTestId('391.InkomensToets.NhgInkToetsContent_201801.container19').getByRole('textbox', { name: 'Aantal maanden' }).nth(1);
 
         this.buttonBereken = page.getByRole('button', { name: 'Bereken' }).first(); // todo: fix the .first() workaround
-        // Initialize the locator for the Resultaat header
+        
         this.headerResultaat = page.locator('h4.mx-text.mx-name-text6');
         this.valueDatumToetsing =  page.locator('.mx-datepicker', {
             has: page.locator('label', { hasText: 'Datum toetsing' })
@@ -72,4 +96,40 @@ export class SneltoetsAcceptatie {
     async visitPage() {
     await this.page.goto('https://mijn.nhg.nl/');
   }
+
+    // Update the function to use the interface
+    async fillSneltoetsForm(fields: SneltoetsFormFields) {
+        await this.inputGewenstLeenbedrag.fill(fields.gewenstLeenbedrag || '');
+        await this.inputWaarvanInBox3.fill(fields.waarvanInBox3 || '');
+        await this.inputHypotheekrente.fill(fields.hypotheekrente || '');
+        await this.inputGewensteLooptijd.fill(fields.gewensteLooptijd || '');
+        await this.inputJaarlijksErfpactcanon.fill(fields.jaarlijksErfpactcanon || '');
+        if (fields.energielabel) {
+            await this.dropdownEnergielabel.selectOption(fields.energielabel);
+        }
+        await this.dateGeboortedatum.fill(fields.geboortedatum || '');
+        await this.inputBrutoJaarinkomen.fill(fields.brutoJaarinkomen || '');
+        await this.inputVerminderdInkomen.fill(fields.verminderdInkomen || '');
+        await this.inputVanafMaand.fill(fields.vanafMaand || '');
+
+        if (fields.sprakeVanMedeaanvrager === 'Ja') {
+            await this.radiobuttonSprakeVanMedeaanvrager.getByLabel('Ja').check();
+            await this.dateMedeaanvragerGeboortedatum.fill(fields.medeaanvragerGeboortedatum || '');
+            await this.inputMedeaanvragerBrutoJaarinkomen.fill(fields.medeaanvragerBrutoJaarinkomen || '');
+            await this.inputMedeaanvragerVerminderdInkomen.fill(fields.medeaanvragerVerminderdInkomen || '');
+            await this.inputMedeaanvragerVanafMaand.fill(fields.medeaanvragerVanafMaand || '');
+        } else if (fields.sprakeVanMedeaanvrager === 'Nee') {
+            await this.radiobuttonSprakeVanMedeaanvrager.getByLabel('Nee').check();
+        }
+
+        if (fields.financieleVerplichtingen === 'Ja') {
+            await this.radiobuttonFinancieleVerplichtingen.getByLabel('Ja').check();
+            await this.inputFinancieleVerplichtingenBedragMaandelijks.fill(fields.financieleVerplichtingenBedragMaandelijks || '');
+            await this.inputFinancieleVerplichtingenAantalMaanden.fill(fields.financieleVerplichtingenAantalMaanden || '');
+            await this.inputFinancieleVerplichtingenHoogteMaandelijkseAlimentatieplicht.fill(fields.financieleVerplichtingenHoogteMaandelijkseAlimentatieplicht || '');
+            await this.inputFinancieleVerplichtingenAantalMaandenAlimentatieplicht.fill(fields.financieleVerplichtingenAantalMaandenAlimentatieplicht || '');
+        } else if (fields.financieleVerplichtingen === 'Nee') {
+            await this.radiobuttonFinancieleVerplichtingen.getByLabel('Nee').check();
+        }
+    }
 }

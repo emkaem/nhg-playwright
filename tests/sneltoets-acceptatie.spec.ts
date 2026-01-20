@@ -9,18 +9,21 @@ test.beforeEach(async ({ page }) => {
 test('happy flow filling in NHG Sneltoets with minimal input', async ({ page }) => {
     const sneltoetsAcceptatie = new SneltoetsAcceptatie(page);
 
-    await sneltoetsAcceptatie.inputGewenstLeenbedrag.fill('250000');
-    await sneltoetsAcceptatie.inputWaarvanInBox3.fill('5000');
-    await sneltoetsAcceptatie.inputHypotheekrente.fill('3,5');
-    await sneltoetsAcceptatie.inputGewensteLooptijd.fill('30');
-    await sneltoetsAcceptatie.inputJaarlijksErfpactcanon.fill('1200');
-    await sneltoetsAcceptatie.dropdownEnergielabel.selectOption('B');
-    await sneltoetsAcceptatie.dateGeboortedatum.fill('13-01-1985');
-    await sneltoetsAcceptatie.inputBrutoJaarinkomen.fill('60000');
-    await sneltoetsAcceptatie.inputVerminderdInkomen.fill('0');
-    await sneltoetsAcceptatie.inputVanafMaand.fill('1');
-    await sneltoetsAcceptatie.radiobuttonSprakeVanMedeaanvrager.getByLabel('Nee').check();
-    await sneltoetsAcceptatie.radiobuttonFinancieleVerplichtingen.getByLabel('Nee').check();
+    // Use the generic function to fill the form with specific values
+    await sneltoetsAcceptatie.fillSneltoetsForm({
+        gewenstLeenbedrag: '250000',
+        waarvanInBox3: '5000',
+        hypotheekrente: '3,5',
+        gewensteLooptijd: '30',
+        jaarlijksErfpactcanon: '1200',
+        energielabel: 'B',
+        geboortedatum: '13-01-1985',
+        brutoJaarinkomen: '60000',
+        verminderdInkomen: '0',
+        vanafMaand: '1',
+        sprakeVanMedeaanvrager: 'Nee',
+        financieleVerplichtingen: 'Nee',
+    });
 
     const responsePromise = page.waitForResponse(
         response => response.url().includes('/xas/')
@@ -40,28 +43,29 @@ test('happy flow filling in NHG Sneltoets with minimal input', async ({ page }) 
 test('happy flow filling in NHG Sneltoets with maximum input', async ({ page }) => {
     const sneltoetsAcceptatie = new SneltoetsAcceptatie(page);
     
-    await sneltoetsAcceptatie.inputGewenstLeenbedrag.fill('470000');
-    await sneltoetsAcceptatie.inputWaarvanInBox3.fill('25000');
-    await sneltoetsAcceptatie.inputHypotheekrente.fill('23,5');
-    await sneltoetsAcceptatie.inputGewensteLooptijd.fill('96');
-    await sneltoetsAcceptatie.inputJaarlijksErfpactcanon.fill('100');
-    await sneltoetsAcceptatie.dropdownEnergielabel.selectOption('A++');
-    await sneltoetsAcceptatie.dateGeboortedatum.fill('13-06-1975');
-    await sneltoetsAcceptatie.inputBrutoJaarinkomen.fill('123000');
-    await sneltoetsAcceptatie.inputVerminderdInkomen.fill('1000');
-    await sneltoetsAcceptatie.inputVanafMaand.fill('6');
-    
-    await sneltoetsAcceptatie.radiobuttonSprakeVanMedeaanvrager.getByLabel('Ja').check();
-    await sneltoetsAcceptatie.dateMedeaanvragerGeboortedatum.fill('20-12-1980');
-    await sneltoetsAcceptatie.inputMedeaanvragerBrutoJaarinkomen.fill('80000');
-    await sneltoetsAcceptatie.inputMedeaanvragerVerminderdInkomen.fill('500');
-    await sneltoetsAcceptatie.inputMedeaanvragerVanafMaand.fill('7');
-
-    await sneltoetsAcceptatie.radiobuttonFinancieleVerplichtingen.getByLabel('Ja').check();
-    await sneltoetsAcceptatie.inputFinancieleVerplichtingenBedragMaandelijks.fill('750');
-    await sneltoetsAcceptatie.inputFinancieleVerplichtingenAantalMaanden.fill('12');
-    await sneltoetsAcceptatie.inputFinancieleVerplichtingenHoogteMaandelijkseAlimentatieplicht.fill('345');
-    await sneltoetsAcceptatie.inputFinancieleVerplichtingenAantalMaandenAlimentatieplicht.fill('24');
+    // Use the generic function to fill the form with specific values
+    await sneltoetsAcceptatie.fillSneltoetsForm({
+        gewenstLeenbedrag: '470000',
+        waarvanInBox3: '25000',
+        hypotheekrente: '23,5',
+        gewensteLooptijd: '96',
+        jaarlijksErfpactcanon: '100',
+        energielabel: 'A++',
+        geboortedatum: '13-06-1975',
+        brutoJaarinkomen: '123000',
+        verminderdInkomen: '1000',
+        vanafMaand: '6',
+        sprakeVanMedeaanvrager: 'Ja',
+        medeaanvragerGeboortedatum: '20-12-1980',
+        medeaanvragerBrutoJaarinkomen: '80000',
+        medeaanvragerVerminderdInkomen: '500',
+        medeaanvragerVanafMaand: '7',
+        financieleVerplichtingen: 'Ja',
+        financieleVerplichtingenBedragMaandelijks: '750',
+        financieleVerplichtingenAantalMaanden: '12',
+        financieleVerplichtingenHoogteMaandelijkseAlimentatieplicht: '345',
+        financieleVerplichtingenAantalMaandenAlimentatieplicht: '24'
+    });
 
     const responsePromise = page.waitForResponse(
         response => response.url().includes('/xas/')
