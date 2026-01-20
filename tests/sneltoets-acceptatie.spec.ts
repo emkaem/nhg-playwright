@@ -7,9 +7,8 @@ test.beforeEach(async ({ page }) => {
 });
 
 test('happy flow filling in NHG Sneltoets with minimal input', async ({ page }) => {
-    // wait for the page to load completely
-    await page.waitForLoadState('networkidle');
     const sneltoetsAcceptatie = new SneltoetsAcceptatie(page);
+
     await sneltoetsAcceptatie.inputGewenstLeenbedrag.fill('250000');
     await sneltoetsAcceptatie.inputWaarvanInBox3.fill('5000');
     await sneltoetsAcceptatie.inputHypotheekrente.fill('3,5');
@@ -39,9 +38,8 @@ test('happy flow filling in NHG Sneltoets with minimal input', async ({ page }) 
 });
 
 test('happy flow filling in NHG Sneltoets with maximum input', async ({ page }) => {
-    // wait for the page to load completely
-    await page.waitForLoadState('networkidle');
     const sneltoetsAcceptatie = new SneltoetsAcceptatie(page);
+    
     await sneltoetsAcceptatie.inputGewenstLeenbedrag.fill('470000');
     await sneltoetsAcceptatie.inputWaarvanInBox3.fill('25000');
     await sneltoetsAcceptatie.inputHypotheekrente.fill('23,5');
