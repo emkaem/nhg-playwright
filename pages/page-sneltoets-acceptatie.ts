@@ -1,4 +1,4 @@
-import { type Locator, type Page } from '@playwright/test';
+import { type Locator, type Page, Response, expect } from '@playwright/test';
 
 // Define an interface for the form fields
 interface SneltoetsFormFields {
@@ -105,7 +105,7 @@ export class SneltoetsAcceptatie {
     await this.page.goto('https://mijn.nhg.nl/');
   }
 
-    // Update the function to use the interface
+    // fill in the form with provided values
     async fillSneltoetsForm(fields: SneltoetsFormFields) {
         await this.inputGewenstLeenbedrag.fill(fields.gewenstLeenbedrag || '');
         await this.inputWaarvanInBox3.fill(fields.waarvanInBox3 || '');
@@ -173,5 +173,15 @@ export class SneltoetsAcceptatie {
         } else if (fields.financieleVerplichtingen === 'Nee') {
             await this.radiobuttonFinancieleVerplichtingen.getByLabel('Nee').check();
         }
+    }
+
+    async clickSneltoetsBerekenButton(): Promise<Response> {
+        const responsePromise = this.page.waitForResponse(
+            response => response.url().includes('/xas/')
+        );
+        await this.buttonBereken.click();
+        const response = await responsePromise;
+        expect(response.status()).toBe(200);
+        return response;
     }
 }

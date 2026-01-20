@@ -24,13 +24,7 @@ test('happy flow filling in NHG Sneltoets with minimal input', async ({ page }) 
         financieleVerplichtingen: 'Nee',
     });
 
-    const responsePromise = page.waitForResponse(
-        response => response.url().includes('/xas/')
-    );    
-    await sneltoetsAcceptatie.buttonBereken.click();
-
-    const response =  await responsePromise;
-    expect(response.status()).toBe(200);
+    await sneltoetsAcceptatie.clickSneltoetsBerekenButton();
 
     await expect(sneltoetsAcceptatie.headerResultaat).toBeVisible();
     await expect(sneltoetsAcceptatie.valueDatumToetsing).toHaveText('20-01-2026');
@@ -63,14 +57,7 @@ test('happy flow filling in NHG Sneltoets with maximum input', async ({ page }) 
         financieleVerplichtingenAantalMaandenAlimentatieplicht: '24'
     });
 
-    const responsePromise = page.waitForResponse(
-        response => response.url().includes('/xas/')
-    );    
-    await sneltoetsAcceptatie.buttonBereken.click();
-
-    const response =  await responsePromise;
-    expect(response.status()).toBe(200);
-
+    await sneltoetsAcceptatie.clickSneltoetsBerekenButton();
 
     await expect(sneltoetsAcceptatie.headerResultaat).toBeVisible();
     await expect(sneltoetsAcceptatie.valueDatumToetsing).toHaveText('20-01-2026');
@@ -85,14 +72,7 @@ test('Sneltoets with restschuld "nee" and empty all fields', async ({ page }) =>
         financieleVerplichtingen: 'Ja',
     });
 
-    const responsePromise = page.waitForResponse(
-        response => response.url().includes('/xas/')
-    );    
-    await sneltoetsAcceptatie.buttonBereken.click();
-
-    const response =  await responsePromise;
-    expect(response.status()).toBe(200);
-    /// todo: this currently gives a POST 200, what is the expected behavior is?
+    await sneltoetsAcceptatie.clickSneltoetsBerekenButton();
 
     // assert "Resultaat" header is not visible nor the other fields
     await expect(sneltoetsAcceptatie.headerResultaat).not.toBeAttached();
