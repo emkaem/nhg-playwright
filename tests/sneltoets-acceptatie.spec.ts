@@ -1,4 +1,42 @@
 import { test, expect } from '@playwright/test';
+import { SneltoetsAcceptatie } from '../pages/page-sneltoets-acceptatie';
+
+test.beforeEach(async ({ page }) => {
+  const sneltoetsAcceptatie = new SneltoetsAcceptatie(page);
+  await sneltoetsAcceptatie.visitPage();
+});
+
+test('happy flow filling in NHG Sneltoets', async ({ page }) => {
+    // wait for the page to load completely
+    await page.waitForLoadState('networkidle');
+    const sneltoetsAcceptatie = new SneltoetsAcceptatie(page);
+    await sneltoetsAcceptatie.inputGewenstLeenbedrag.fill('250000');
+    await sneltoetsAcceptatie.inputWaarvanInBox3.fill('5000');
+    await sneltoetsAcceptatie.inputHypotheekrente.fill('3,5');
+    await sneltoetsAcceptatie.inputGewensteLooptijd.fill('30');
+    await sneltoetsAcceptatie.inputJaarlijksErfpactcanon.fill('1200');
+    await sneltoetsAcceptatie.dropdownEnergielabel.selectOption('B');
+    await sneltoetsAcceptatie.dateGeboortedatum.fill('13-01-1985');
+    await sneltoetsAcceptatie.inputBrutoJaarinkomen.fill('60000');
+    await sneltoetsAcceptatie.inputVerminderdInkomen.fill('0');
+    await sneltoetsAcceptatie.inputVanafMaand.fill('1');
+    await sneltoetsAcceptatie.radiobuttonSprakeVanMedeaanvrager.getByLabel('Nee').check();
+    await sneltoetsAcceptatie.radiobuttonFinancieleVerplichtingen.getByLabel('Nee').check();
+
+    const responsePromise = page.waitForResponse(
+        response => response.url().includes('/xas/')
+    );    
+    await sneltoetsAcceptatie.buttonBereken.click();
+
+    const response =  await responsePromise;
+    expect(response.status()).toBe(200);
+
+
+    await expect(sneltoetsAcceptatie.headerResultaat).toBeVisible();
+
+    await expect(sneltoetsAcceptatie.valueDatumToetsing).toHaveText('20-01-2026');
+    await expect(sneltoetsAcceptatie.valueIndicatieLening).toHaveText('5.110');
+});
 
 /* test: Happy flow > restschuld "nee"
     - fill in the whole form
