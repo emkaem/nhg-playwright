@@ -1,6 +1,10 @@
 import { test, expect } from '@playwright/test';
 import { SneltoetsAcceptatie } from '../pages/page-sneltoets-acceptatie';
 import { sneltoetsMinimalInput, sneltoetsMaximumInput } from '../fixtures/data-sneltoets-acceptatie';
+import { format } from 'date-fns';
+
+const today = new Date();
+const dateToday = format(today, 'dd-MM-yyyy');
 
 test.beforeEach(async ({ page }) => {
   const sneltoetsAcceptatie = new SneltoetsAcceptatie(page);
@@ -14,7 +18,7 @@ test('happy flow filling in NHG Sneltoets with minimal input', async ({ page }) 
   await sneltoetsAcceptatie.clickSneltoetsBerekenButton();
 
   await expect(sneltoetsAcceptatie.headerResultaat).toBeVisible();
-  await expect(sneltoetsAcceptatie.valueDatumToetsing).toHaveText('20-01-2026');
+  await expect(sneltoetsAcceptatie.valueDatumToetsing).toHaveText(dateToday);
   await expect(sneltoetsAcceptatie.valueIndicatieLening).toHaveText('5.110');
   await expect(page).toHaveScreenshot('sneltoets-minimal-input-desktop.png');
 });
@@ -26,7 +30,7 @@ test('happy flow filling in NHG Sneltoets with maximum input', async ({ page }) 
   await sneltoetsAcceptatie.clickSneltoetsBerekenButton();
 
   await expect(sneltoetsAcceptatie.headerResultaat).toBeVisible();
-  await expect(sneltoetsAcceptatie.valueDatumToetsing).toHaveText('20-01-2026');
+  await expect(sneltoetsAcceptatie.valueDatumToetsing).toHaveText(dateToday);
   await expect(sneltoetsAcceptatie.valueIndicatieLening).toHaveText('46.738');
   await expect(page).toHaveScreenshot('sneltoets-maximum-input-desktop.png');
 });
@@ -51,6 +55,10 @@ test('Sneltoets with restschuld "nee" and empty all fields', async ({ page }) =>
   await expect(sneltoetsAcceptatie.inputBrutoJaarinkomenError).toBeVisible();
   await expect(sneltoetsAcceptatie.inputMedeaanvragerBrutoJaarinkomenError).toBeVisible();
   await expect(page).toHaveScreenshot('sneltoets-empty-fields-input-desktop.png');
+});
+
+test('Sneltoets data retention in the fields when switching between "restschuld nee > ja"', async ({ page }) => {
+  const sneltoetsAcceptatie = new SneltoetsAcceptatie(page);
 });
 
 /* test: Happy flow > restschuld "ja"
