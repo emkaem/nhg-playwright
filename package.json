@@ -8,7 +8,9 @@
     "test": "npx playwright test",
     "test-ui": "npx playwright test --ui",
     "test-headed": "npx playwright test --headed",
-    "show-report": "npx playwright show-report"
+    "show-report": "npx playwright show-report",
+    "test-snapshots": "TAKE_SCREENSHOTS=true npx playwright test",
+    "test-ui-snapshots": "TAKE_SCREENSHOTS=true npx playwright test --ui"
   },
   "keywords": [],
   "author": "",
